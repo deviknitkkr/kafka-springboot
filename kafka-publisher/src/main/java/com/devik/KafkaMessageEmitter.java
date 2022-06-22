@@ -8,28 +8,27 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.Date;
-import java.util.zip.DataFormatException;
 
 @Component
 public class KafkaMessageEmitter implements ListenableFutureCallback<SendResult<String, String>> {
 
     @Autowired
-    private KafkaTemplate<String,String> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Scheduled(fixedDelay = 1000)
-    private void emitRandomMessage(){
+    private void emitRandomMessage() {
         kafkaTemplate
-                .send("topic-1","Hello at "+new Date())
+                .send("topic-1", "Hello at " + new Date())
                 .addCallback(this);
     }
 
     @Override
     public void onFailure(Throwable ex) {
-        System.out.println("Message failed:"+ex.getMessage());
+        System.out.println("Message failed:" + ex.getMessage());
     }
 
     @Override
     public void onSuccess(SendResult<String, String> result) {
-        System.out.println("Successfully sent message:"+result.getProducerRecord().value());
+        System.out.println("Successfully sent message:" + result.getProducerRecord().value());
     }
 }
